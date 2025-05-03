@@ -1,29 +1,25 @@
 ﻿using BusinessLogic;
-using InternsTestModels.Models.Enums;
-using InternsTestModels.Models.Rabbit.Direction.Requests;
 using MassTransit;
+using Microsoft.Extensions.Logging;
+using Rabbit.Direction.Requests;
+using Rabbit.Direction.Responses;
 
-namespace Rabbit.Consumers.Direction
+namespace RabbitMQ.Consumers.Direction
 {
     public class DeleteDirectionConsumer : IConsumer<DeleteDirectionRequest>
     {
         private readonly ServiceManager serviceManager;
-        private readonly IServiceProvider serviceProvider;
-        public DeleteDirectionConsumer(IServiceProvider provider)
+        private readonly ILogger<DeleteDirectionConsumer> logger;
+        public DeleteDirectionConsumer(IServiceProvider provider, ILogger<DeleteDirectionConsumer> logger)
         {
             serviceManager = new(provider);
-            serviceProvider = provider;
+            this.logger = logger;
         }
         public async Task Consume(ConsumeContext<DeleteDirectionRequest> context)
         {
-            try
-            {
-                await serviceManager.Directions.DeleteDirectionAsync(context.Message.Id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            DeleteDirectionResponse response = new();
+            await serviceManager.Directions.DeleteDirectionAsync(context.Message.Id);
+            await context.RespondAsync(response);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using InternsTestModels.Models.Data.Internships;
+﻿using DataModels.Internships;
 
 namespace Data.Interfaces
 {

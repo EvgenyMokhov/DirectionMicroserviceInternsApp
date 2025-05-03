@@ -1,9 +1,9 @@
 ﻿using Data;
-using InternsTestModels.Models.Data.Internships;
-using InternsTestModels.Models.DTOs;
-using InternsTestModels.Models.Enums;
+using DataModels.Internships;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Other.Enums;
+using Rabbit.Direction;
 
 namespace BusinessLogic.Services
 {
@@ -23,7 +23,7 @@ namespace BusinessLogic.Services
             DataManager dataManager = scope.ServiceProvider.GetRequiredService<DataManager>();
             InternshipDirection dbDirection = new()
             {
-                Id = Guid.NewGuid(),
+                Id = direction.Id,
                 Name = direction.Name,
                 Description = "This is description!", 
                 IsActive = true
@@ -75,7 +75,10 @@ namespace BusinessLogic.Services
         {
             using IServiceScope scope = provider.CreateScope();
             DataManager dataManager = scope.ServiceProvider.GetRequiredService<DataManager>();
-            return DbDirectionToDto(await dataManager.Directions.GetDirectionAsync(id));
+            InternshipDirection direction = await dataManager.Directions.GetDirectionAsync(id);
+            if (direction == null)
+                throw new ArgumentException("Direction not found");
+            return DbDirectionToDto(direction);
         }
 
         public async Task DeleteDirectionAsync(Guid id)

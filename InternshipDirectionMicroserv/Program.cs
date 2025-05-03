@@ -6,12 +6,12 @@ using Serilog.Events;
 using Data;
 using Data.Implementations;
 using Data.Interfaces;
-using Rabbit.Consumers.Direction;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using Serilog;
 using Elastic.CommonSchema.Serilog;
+using RabbitMQ.Consumers.Direction;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, cfg) =>

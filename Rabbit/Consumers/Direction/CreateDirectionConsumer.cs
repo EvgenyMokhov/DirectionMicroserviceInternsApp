@@ -1,29 +1,25 @@
 ﻿using BusinessLogic;
-using InternsTestModels.Models.Enums;
-using InternsTestModels.Models.Rabbit.Direction.Requests;
 using MassTransit;
+using Microsoft.Extensions.Logging;
+using Rabbit.Direction.Requests;
+using Rabbit.Direction.Responses;
 
-namespace Rabbit.Consumers.Direction
+namespace RabbitMQ.Consumers.Direction
 {
     public class CreateDirectionConsumer : IConsumer<CreateDirectionRequest>
     {
         private readonly ServiceManager serviceManager;
-        private readonly IServiceProvider serviceProvider;
-        public CreateDirectionConsumer(IServiceProvider provider) 
-        { 
+        private readonly ILogger<CreateDirectionConsumer> logger;
+        public CreateDirectionConsumer(IServiceProvider provider, ILogger<CreateDirectionConsumer> logger)
+        {
             serviceManager = new(provider);
-            serviceProvider = provider;
+            this.logger = logger;
         }
         public async Task Consume(ConsumeContext<CreateDirectionRequest> context)
         {
-            try
-            {
-                await serviceManager.Directions.CreateDirectionAsync(context.Message.RequestData);
-            }
-            catch (Exception ex) 
-            {
-                throw new Exception(ex.Message);
-            }
+            CreateDirectionResponse response = new();
+            await serviceManager.Directions.CreateDirectionAsync(context.Message.RequestData);
+            await context.RespondAsync(response);
         }
     }
 }

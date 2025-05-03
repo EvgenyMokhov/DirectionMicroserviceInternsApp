@@ -1,6 +1,6 @@
 ﻿using Data;
 using Data.Interfaces;
-using InternsTestModels.Models.Data.Internships;
+using DataModels.Internships;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Implementations
